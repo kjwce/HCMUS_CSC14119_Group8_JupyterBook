@@ -1,0 +1,14 @@
+title: Intro2DS report
+author: Group 08
+logo: logo.png
+
+execute:
+  execute_notebooks: "off"
+
+repository:
+  url: https://github.com/kjwce/HCMUS_CSC14119_Group8_JupyterBook
+  path_to_book: ""
+
+html:
+  use_issues_button: true
+  use_repository_button: true
