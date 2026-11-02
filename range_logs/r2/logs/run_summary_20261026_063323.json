@@ -1,0 +1,30 @@
+{
+  "range": [
+    "2605.22338",
+    "2605.27337"
+  ],
+  "generated_at": "2026-10-26T06:33:23Z",
+  "papers": 0,
+  "versions": 0,
+  "papers_complete": 0,
+  "papers_with_tex_source": 0,
+  "paper_success_rate": 0,
+  "version_status_counts": {},
+  "version_success_rate": 0,
+  "avg_paper_bytes_before_removing_figures": 0,
+  "avg_paper_bytes_after_removing_figures": 0,
+  "size_reduction": 0,
+  "s2_status_counts": {},
+  "s2_success_rate": 0,
+  "avg_references_per_paper": 0.0,
+  "avg_arxiv_references_per_paper": 0.0,
+  "avg_download_seconds_per_paper": 0.0,
+  "timings_this_run_s": {
+    "total_s": 38.7
+  },
+  "peak_ram_mb_all_runs": 42.4,
+  "mean_ram_mb_all_runs": 42.2,
+  "peak_output_mb": 0.1,
+  "s2_api_key_used": true,
+  "arxiv_pacing": "end"
+}
