@@ -167,7 +167,7 @@ The Semantic Scholar delay grows by 25% after each HTTP 429 (up to 5 s) and shri
 - **arXiv API unavailable:** after a 60 s cooldown and one more try, the crawler uses OAI-PMH for 10 minutes, then tests the API again.
 - **Unsupported formats** (PDF only, Word, no TeX files): saved as empty folders with the final statuses `pdf_only` or `non_tex`.
 
-If a request still fails after all retries, it is recorded as `error` and the crawler moves on to the next paper. These cases are retried the next time the command runs, but recovery is not guaranteed: after our last session, 23 of 6,851 versions (0.34%) still had the status `error`.
+If a request still fails after all retries, it is recorded as `error` and the crawler moves on to the next paper. These cases are retried the next time the command runs, but recovery is not guaranteed: after our last session, around 0.34% (of each 5000 papers crawling) still had the status `error`.
 
 **Checkpointing.** Progress is saved at every step:
 
@@ -205,7 +205,7 @@ data/
     └── run_summary_*.json      // Stores timestamped summaries of individual crawling runs, allowing previous execution results to be reviewed 
 ```
 
-#### Target Schema Mapping
+### Target Schema Mapping
 
 **`papers` table**
 
