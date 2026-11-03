@@ -39,7 +39,7 @@ flowchart LR
 
 In accordance with the project guidelines, the source code repository and the compiled Jupyter notebook report repository are maintained separately.
 
-* Shared source code repo: https://github.com/kjwce/HCMUS_CSC14119_Group8_arxiv-crawler
+* Shared source code repo: https://github.com/kjwce/HCMUS_CSC14119_Group8_arXivProject
 * Jupyter book report: https://github.com/kjwce/HCMUS_CSC14119_Group8_JupyterBook
 
 All tables and figures in the results sections of this book are dynamically generated during book compilation from the crawler and parser logs (execute_notebooks: force in `_config.yml`).
