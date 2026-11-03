@@ -1,14 +1,42 @@
-title: Intro2DS report
-author: Group 08
+# Book settings
+title: "arXiv LaTeX Pipeline — Milestones 1 & 2 Report"
+author: "Nguyễn Gia Kiệt, Bùi Lê Bảo Ngọc, Tống Vân Anh, Nguyễn Tiến Hưng, Nguyễn Duy Đức"
+copyright: "2026"
 logo: logo.png
+only_build_toc_files: true
 
+# Force re-execution of notebooks/MyST markdown on each build so figures & tables are compiled live
 execute:
-  execute_notebooks: "off"
+  execute_notebooks: force
+  timeout: 180
+  allow_errors: false
 
+# Parse MyST Markdown features (math, admonitions, code-cells)
+parse:
+  myst_enable_extensions:
+    - dollarmath
+    - amsmath
+    - colon_fence
+    - deflist
+    - html_image
+
+# Bibliography file (already in your repo)
+bibtex_bibfiles:
+  - references.bib
+
+# Repository info
 repository:
   url: https://github.com/kjwce/HCMUS_CSC14119_Group8_JupyterBook
-  path_to_book: ""
+  branch: main
 
+# HTML-specific settings
 html:
   use_issues_button: true
   use_repository_button: true
+  home_page_in_navbar: true
+
+sphinx:
+  extra_extensions:
+    - sphinxcontrib.mermaid
+  config:
+    html_show_copyright: true
