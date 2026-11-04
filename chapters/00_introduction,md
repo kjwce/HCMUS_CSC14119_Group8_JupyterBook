@@ -1,6 +1,6 @@
-# 1. Introduction
+# 0. Introduction
 
-## 1.1. Project background
+## 0.1. Project background
 
 The growth in usage of scientific repositories has transformed modern science communication, with arXiv acting as one of the foremost servers for scientific publications. While harvesting paper metadata (e.g. titles, author lists, abstracts,...) from arXiv is a common enough project/exercise in data engineering, this project aims to achieve more than that: instead of harvesting just the metadata, we will also harvest the source LaTex files (.tex, .bib) as well. 
 
@@ -8,7 +8,7 @@ While scraping the contents of arXiv papers is decidedly not a novel project ide
 
 In contrast, scraping and processing these original TeX sources instead of the compiled PDFs allows us to preserve the author's exact structural hierarchy, mathematical notation, and explicit citation markers.
 
-## 1.2. Problem statement & project pipeline 
+## 0.2. Problem statement & project pipeline 
 
 In real usage, references inside raw LaTeX manuscripts are noisy, inconsistent, and evolving across revisions. Authors can define references manually using unstructured `\bibitem` commands, abbreviate venue names, omit publication years, or rename citation keys across versions of the same preprint. A paper can therefore cite the same work under different keys and different wording in version 1 and version 3, for example. Linking these entries to the works they actually refer to is hard unless the sources are cleaned and standardized first.
 
@@ -36,7 +36,7 @@ flowchart LR
 * Milestone 2 (Data parsing & standardization): For each version we find the root .tex file, follow \input and \include commands to gather the files that are actually compiled, and build a document hierarchy down to sentences, block formulas and figures. We clean the LaTeX and normalize the mathematics, convert \bibitem entries into BibTeX, and deduplicate across versions, both reference entries and full-text elements. The output is the elements, hierarchy and bibtex tables.
 * Milestone 3 (Reference matching **expected workflow**): We match each standardized BibTeX entry to the correct arXiv-keyed reference crawled in Milestone 1. The pipeline covers data cleaning, labelling, feature engineering, modeling and evaluation, and ends in the predictions table. All six tables will be published as one Parquet dataset on Hugging Face.
 
-## 1.3. Repository links
+## 0.3. Repository links
 
 In accordance with the project guidelines, the source code repository and the compiled Jupyter notebook report repository are maintained separately.
 
@@ -45,7 +45,7 @@ In accordance with the project guidelines, the source code repository and the co
 
 All tables and figures in the results sections of this book are dynamically generated during book compilation from the crawler and parser logs (execute_notebooks: force in `_config.yml`).
 
-## 1.4. Team roles & pre-assigned data scopes
+## 0.4. Team roles & pre-assigned data scopes
 
 Our team of five was assigned five contiguous blocks of arXiv IDs from `2603` to `2606` (March - June 2026). Each block holds exactly 5,000 papers, making it so that the corpus has 25,000 papers in total. Each member crawled their own block on a separate CPU-only Google Colab instance. Each instance made at most one request every three seconds on a single connection, per arXiv usage policy. Each member will also publish their own range as a separate Hugging Face dataset, as the course requires. The exact ID ranges are listed below. How a range becomes a concrete ID list, including the month-boundary case in Range 1, will be expanded upon later.
 
