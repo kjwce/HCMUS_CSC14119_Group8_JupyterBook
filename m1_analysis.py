@@ -126,8 +126,15 @@ def load_range(d):
 
 
 def load_all(range_logs_dir=None):
+    here = Path(__file__).resolve().parent
     candidates = [range_logs_dir] if range_logs_dir else []
-    candidates += ["range_logs", "../logs_or_benchmarks/range_logs", "./logs_or_benchmarks/range_logs"]
+    candidates += [
+        "range_logs",
+        "../range_logs",
+        str(here / "range_logs"),
+        "../logs_or_benchmarks/range_logs",
+        "./logs_or_benchmarks/range_logs",
+    ]
     for c in candidates:
         if c and Path(c).exists():
             found = {p.name: load_range(p) for p in sorted(Path(c).glob("r[0-9]*")) if (p / "manifest").exists()}
