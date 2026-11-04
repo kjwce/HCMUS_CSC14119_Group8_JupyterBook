@@ -15,12 +15,18 @@ This section reports what the crawl produced and how the scraper behaved. Every 
 
 ```{code-cell} ipython3
 :tags: [remove-input]
+import sys
+from pathlib import Path
+for _p in (Path.cwd(), Path.cwd().parent):
+    if (_p / "m1_analysis.py").exists() and str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
 import warnings; warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 from IPython.display import display
 from m1_analysis import *
 
-S = load_all("../logs_or_benchmarks/range_logs")   # r1..r5, one folder per team member
+S = load_all("../range_logs")   # r1..r5, one folder per team member
 T = tables(S)
 ```
 
