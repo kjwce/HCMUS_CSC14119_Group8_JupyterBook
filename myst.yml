@@ -2,12 +2,12 @@ version: 1
 project:
   github: kjwce/HCMUS_CSC14119_Group8_JupyterBook
   toc:
-    - file: chapters/01_introduction.md
-      title: "1. Introduction"
-    - file: chapters/02_crawling.md
-      title: "2. Crawling"
-    - file: chapters/03_parsing.md
-      title: "3. Parsing"
+    - file: chapters/01_milestone1.md
+      title: "1. Milestone 1: Data Crawling"
+    # - file: chapters/02_milestone2.md
+    #   title: "2. Milestone 2: Parsing & Standardization"
+    # - file: chapters/03_milestone3.md
+    #   title: "3. Milestone 3: Reference Matching"
 site:
   options:
     logo: logo.png
