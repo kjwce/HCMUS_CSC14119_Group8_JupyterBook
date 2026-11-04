@@ -1,4 +1,4 @@
-name: Deploy MyST Jupyter Book to GitHub Pages
+name: Deploy Jupyter Book to GitHub Pages
 
 on:
   push:
@@ -10,39 +10,49 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: /${{ github.event.repository.name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js (required by MyST engine)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      - name: Set up Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
-      - name: Install Python dependencies & MyST
+      - name: Install Python dependencies and MyST
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           python -m ipykernel install --user --name python3
 
-      - name: Build MyST Book (executes code cells live)
-        env:
-          BASE_URL: /${{ github.event.repository.name }}
-        run: |
-          myst build --html --execute
+      - name: Build MyST HTML site (with notebook execution)
+        run: myst build --html --execute
 
-      - name: Upload HTML artifact
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_build/html"
+          path: ./_build/html
 
       - name: Deploy to GitHub Pages
         id: deployment
