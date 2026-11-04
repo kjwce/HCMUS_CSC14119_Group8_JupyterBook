@@ -9,14 +9,14 @@ kernelspec:
   name: python3
 ---
 
-# 2. Milestone 1: Data Crawling
+# Milestone 1: Data Crawling
 
-## 2. Data crawling methodology
+## 1. Data crawling methodology
 
-### 2.1. System Flow
+### 1.1. System Flow
 ![System Architecture](../images/system_architecture.svg)
 
-### 2.2. Tools and Libraries Used
+### 1.2. Tools and Libraries Used
 
 **Third-party Libraries**
 
@@ -45,9 +45,9 @@ kernelspec:
 - **arXiv Source Endpoint** (`export.arxiv.org/src/{id}v{n}`): Downloads the LaTeX source archive for every available paper version.
 - **Semantic Scholar Graph API** (`/paper/batch`): Retrieves reference metadata in batches. An optional API key can be provided through the `S2_API_KEY` environment variable or the `s2_api_key.txt` file.
 
-### 2.3. Implementation 
+### 1.3. Implementation 
 
-#### 2.3.1. Discovery
+#### 1.3.1. Discovery
 
 Our implementation adopts two discovery mechanisms: the `arXiv Atom API` as a primary method for retrieving the paper metadata and `OAI-PMH` as a fallback.
 
@@ -69,7 +69,7 @@ flowchart TD
 
 ```
 
-#### 2.3.2. Versioned Source Downloading and Extraction
+#### 1.3.2. Versioned Source Downloading and Extraction
 
 After collecting paper metadata, the crawler downloads the source files of every available version (v1, v2, v3, etc) using the arXiv source endpoint
 
@@ -107,7 +107,7 @@ flowchart TD
     J --> K
 ```
 
-#### 2.3.3. Non-TeX and Missing-Source Handling
+#### 1.3.3. Non-TeX and Missing-Source Handling
 However, not all arXiv versions provide usable LaTeX sources. To preserve dataset coverage, the crawler keeps an empty directory for versions without usable .tex files.
 
 To resolve, the `unpack()` function identifies PDF and unsupported formats by inspecting the downloaded content:
@@ -137,7 +137,7 @@ if resp.status_code == 404:
     row.update(save_version(b"", target), status="no_source")
 ```
 
-#### 2.3.4. Reference Metadata Extraction 
+#### 1.3.4. Reference Metadata Extraction 
 
 After the crawler has discovered the arXiv papers in the assigned range, it requests their reference metadata from Semantic Scholar. To do this efficiently, it uses the `/paper/batch` endpoint, and the papers are grouped into batches of up to 100. Each paper is identified by its arXiv ID. For every reference of a paper, Semantic Scholar returns `the title`, `the authors`, `the publication date and year`, and its `identifiers` (the Semantic Scholar ID and, when it exists, the arXiv ID).
 
@@ -157,7 +157,7 @@ flowchart TD
     F -->|No| H[Keep only in raw metadata]
 ```
 
-#### 2.3.5. Rate Limiting and Fault Tolerance
+#### 1.3.5. Rate Limiting and Fault Tolerance
 
 **Rate limiting.** Each service has one HTTP client that sends requests one at a time with a minimum gap between them.
 
@@ -193,7 +193,7 @@ If a request still fails after all retries, it is recorded as `error` and the cr
 - JSON files and version folders are written to a temporary location and then renamed, so an interruption cannot corrupt them.
 - On restart, the crawler reads the latest status of each paper or version and skips the ones that are already final.
 
-#### 2.3.6. Data Organization
+#### 1.3.6. Data Organization
 
 ##### Directory organization 
 
@@ -269,7 +269,7 @@ erDiagram
     }
 ```
 
-## 3. Results & performance evaluation
+## 2. Results & performance evaluation
 
 This section reports what the crawl produced and how the scraper behaved. Every table and figure below is generated when the book is compiled, from the logs the five Colab instances wrote while crawling (download_log.csv, s2_log.csv, resource_log.csv, run_summary_\*.json and papers.jsonl for each range). The analysis code is in `m1_analysis.py`, adapted from the notebook cell we used during the crawl. The numbers quoted in the text come from the same logs; if the logs change, they need to be refreshed.
 
@@ -290,7 +290,7 @@ S = load_all("../range_logs")   # r1..r5, one folder per team member
 T = tables(S)
 ```
 
-### 3.1. Overall summary of crawling metrics
+### 2.1. Overall summary of crawling metrics
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -305,7 +305,7 @@ These three percentages measure different things, so we report them separately i
 - Paper TeX availability (94.79%): at least one version has TeX source.
 - Version TeX extraction (95.00%): the share of all versions that produced TeX.
 
-### 3.2. Corpus coverage and version-level outcomes
+### 2.2. Corpus coverage and version-level outcomes
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -328,7 +328,7 @@ The versions that did not yield TeX fall into three groups:
 
 The remaining 49 versions (0.14%) ended in `error` after the scraper's retries were exhausted. They sit in Ranges 2 and 5 (23 and 26 versions), so those two ranges are the only ones below 100% completion. Section 3.7 explains what these errors are.
 
-### 3.3. Storage efficiency: archive size before vs. after figure removal
+### 2.3. Storage efficiency: archive size before vs. after figure removal
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -341,7 +341,7 @@ We keep only `.tex` and `.bib` members of each archive, so figure binaries and o
 Range 2 lost part of its crawl log during a Colab interruption. After the interruption, 5,206 of its 6,503 `ok` versions were re-registered from files already on disk, and for them only the kept size survived (`note = recovered_existing_files`). Counting these as 0 bytes before removal would have inflated the saving of the whole corpus incorrectly, so every "before" figure here is computed only from versions whose archive size was actually recorded (all of Ranges 1, 3, 4, 5 and 1,297 versions of Range 2). The kept sizes of all versions are known, and they are consistent across ranges.
 ```
 
-### 3.4. Reference metadata coverage and citation statistics
+### 2.4. Reference metadata coverage and citation statistics
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -350,7 +350,7 @@ plot_refs(S); plt.show()
 
 The Semantic Scholar crawl completed for all 25,000 papers: 24,961 returned a reference list and 39 papers were not (yet) indexed, so they have an empty `references.json`. Indexing delays for very recent uploads are a known limitation of the service. A paper has on average **36.7 references**, of which **18.3** carry an arXiv ID; only those become rows of the published `references` table, so it is the second number that bounds the matching pool of Milestone 3. The distribution is long-tailed: the 99th percentile is 132 references and the largest list has 520.
 
-### 3.5. Runtime performance (discovery time, single-paper latency, and end-to-end wall time)
+### 2.5. Runtime performance (discovery time, single-paper latency, and end-to-end wall time)
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -371,7 +371,7 @@ display(T["per_range"][["Mean s/paper", "Median s/paper", "Wall h", "Discovery s
 
 The Pacing column records a configuration difference we only noticed while preparing this report: Ranges 1, 4 and 5 ran with the 3-second gap measured from the start of the previous request, and Ranges 2 and 3 with the gap measured from its end. Both obey the policy, but the second adds the transfer time on top of the gap, so mean times per paper are not strictly comparable across ranges. Ranges 1 and 5 are the cleanest pair to compare (same setting).
 
-### 3.6. Resource footprint (single-worker vs. multi-worker RAM usage and disk storage)
+### 2.6. Resource footprint (single-worker vs. multi-worker RAM usage and disk storage)
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -384,7 +384,7 @@ Memory. One scraper process (including its Semantic Scholar thread) peaked at 42
 
 Disk. The output of one range peaked at 1.1–1.5 GB (1.46 GB at most), and the combined output of the five ranges is about 6.5 GB. Because figures are never written, disk usage grows linearly with the number of papers and the footprint is far below the limit of a Colab instance.
 
-### 3.7. Discussion of failures and limitations
+### 2.7. Discussion of failures and limitations
 
 - Errors (49 versions). 39 are `IncompleteRead` failures (the connection closed while a large archive was downloading) and 10 are HTTP 429 responses (rate limiting) that persisted through the scraper's retries. Both are transient, so rerunning the same command resumes only these versions and should clear them.
 - Missing sources (about 4.9% of versions) are not failures: `pdf_only`, `no_source` and `non_tex` are final outcomes of the data itself. They become empty records, which Milestone 2 has to treat as versions without parsed elements.
