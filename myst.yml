@@ -6,7 +6,7 @@ project:
       title: "1. Introduction"
     - file: chapters/02_crawling.md
       title: "2. Crawling"
-    - file: chapters/03_Parsing.md
+    - file: chapters/03_parsing.md
       title: "3. Parsing"
 site:
   options:
