@@ -278,8 +278,8 @@ This section reports what the crawl produced and how the scraper behaved. Every 
 import sys
 from pathlib import Path
 for _p in (Path.cwd(), Path.cwd().parent):
-    if (_p / "m1_analysis.py").exists() and str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
+    if (_p / "analysis").is_dir() and str(_p / "analysis") not in sys.path:
+        sys.path.insert(0, str(_p / "analysis"))
 
 import warnings; warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
