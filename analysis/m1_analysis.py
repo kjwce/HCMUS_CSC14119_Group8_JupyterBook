@@ -132,6 +132,7 @@ def load_all(range_logs_dir=None):
         "range_logs",
         "../range_logs",
         str(here / "range_logs"),
+        str(here.parent / "range_logs"),
         "../logs_or_benchmarks/range_logs",
         "./logs_or_benchmarks/range_logs",
     ]
