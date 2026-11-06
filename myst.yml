@@ -6,8 +6,8 @@ project:
       title: "0. Introduction"
     - file: chapters/01_milestone1.md
       title: "1. Milestone 1: Data Crawling"
-    # - file: chapters/02_milestone2.md
-    #   title: "2. Milestone 2: Parsing & Standardization"
+    - file: chapters/02_milestone2.md
+      title: "2. Milestone 2: Parsing & Standardization"
     # - file: chapters/03_milestone3.md
     #   title: "3. Milestone 3: Reference Matching"
 site:
