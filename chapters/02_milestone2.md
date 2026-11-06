@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Milestone 2: Hierarchical Parsing and Standardization
+# Milestone 2: Parsing & Standardization
 
 ## 1. Hierarchical Parsing and Standardization Methodology
 
