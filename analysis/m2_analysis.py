@@ -37,6 +37,9 @@ KIND_ORDER = ["sentence", "formula", "figure", "item", "list", "paragraph",
               "subsubsection", "subsection", "section", "abstract", "document"]
 GROUPS = ["1", "2", "3", "4", "5+"]           # number of versions (seen / parsed)
 PAPER_CATS = ["all versions parsed", "partially parsed", "no version parsed"]
+# The parser (run_m2.py) records these three statuses via store.record_empty_version(), so they are all
+# part of m2_stats["empty_versions"]; the coverage chart/table folds them into "empty" by default.
+EMPTY_STATUSES = {"missing_directory": "empty", "empty_gathered_text": "empty"}
 
 
 # ---------------------------------------------------------------- loading
@@ -157,12 +160,14 @@ def _paper_categories(p):
         index=p.index)
 
 
-def _coverage_by_version(S):
-    """Version index (v1, v2, ..., v5+) x status."""
+def _coverage_by_version(S, merge_empty=True):
+    """Version index (v1, v2, ..., v5+) x status (merge_empty=False keeps the parser's raw statuses)."""
     acc = {}
     for idx, d in S["version_status"].items():
         lab = f"v{idx}" if idx < 5 else "v5+"
         for st, n in d.items():
+            if merge_empty:
+                st = EMPTY_STATUSES.get(st, st)
             acc.setdefault(lab, {})
             acc[lab][st] = acc[lab].get(st, 0) + n
     cov = pd.DataFrame.from_dict(acc, orient="index").fillna(0).astype(int)

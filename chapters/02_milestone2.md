@@ -30,7 +30,7 @@ T2 = m2.tables(S2)
 ```
 
 
-## 5.1 Parsing Coverage and Version-Level Success Rate
+### 2.1 Parsing Coverage and Version-Level Success Rate
 
 
 ```{code-cell} ipython3
@@ -39,7 +39,7 @@ display(T2["coverage"])
 m2.plot_coverage(S2); plt.show()
 ```
 
-## 5.2 Element and Structural Distribution
+### 2.2 Element and Structural Distribution
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -48,7 +48,7 @@ m2.plot_kind_mix(S2); plt.show()
 m2.plot_depth(S2); plt.show()
 ```
 
-## 5.3 Deduplication Efficiency
+### 2.3 Deduplication Efficiency
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -56,7 +56,7 @@ display(T2["dedup"])
 m2.plot_dedup(S2); plt.show()
 ```
 
-## 5.5 Parser Performance
+### 2.5 Parser Performance
 
 ```{code-cell} ipython3
 :tags: [remove-input]
