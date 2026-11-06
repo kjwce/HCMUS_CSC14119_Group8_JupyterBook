@@ -535,29 +535,32 @@ Both panels use a logarithmic y-axis so that small categories remain visible; th
 :tags: [remove-input]
 m2.plot_kinds(S2); plt.show()
 ```
-Before deduplication the parser produced 12,755,964 elements from 32,652 parsed versions. Sentences dominate: 10.1M elements (79.5%), about 310 per parsed version, followed by block formulas (1.21M, 9.5%). Together with figures and tables (254k, 2.0%), the three leaf kinds required by the milestone make up 91.0% of all elements. The remaining 9.0% (1.15M elements) are structural nodes: subsections (301k), list items (287k), sections (223k), paragraph-level headings (115k), lists (89k) and sub-subsections (70k). There is exactly one `document` root per parsed version (32,652), and 30,484 versions (93.4%) have an abstract.
+Before deduplication, the parser extracted 12,586,956 elements across 32,652 parsed versions. `Sentences` account for the largest share, with 9.84 million elements (78.2%), averaging around 300 sentences per version. Block `formulas` come next, making up 1.21 million elements (9.6%). Together with `figures` (254k, 2.0%), as specified in the milestone, tables are grouped under the `figure` kind, these three leaf kinds required by the milestone represent 87.8% of all extracted elements. The remaining 12.2% consist of structural nodes. Each parsed version has exactly one `document` root, while 30,484 versions (0.2%) contain an `abstract`.
 
-The kind mix reflects typical scientific papers, with about 7 sections and 9 subsections per version, and each list contains about 3 items on average. Rare levels such as `chapter` (634), `part` (132) and `subparagraph` (807) show that the parser adapts the hierarchy to documents with a different heading structure, such as theses, books and heavily nested articles. Tables are counted as figures, as the milestone specifies. The x-axis is logarithmic because sentences outnumber the rarest kinds by five orders of magnitude; the exact counts are in the table above.
+The distribution also gives a rough picture of how scientific papers are structured. On average, each version contains about 7 `sections`, 9 `subsections`, and 7 `paragraph-level headings`. Lists have around 3 `items` each. There is approximately one block formula for every 8 sentences. However, this does not capture all mathematical content, since inline equations are included within sentences rather than counted separately.
+
+Some heading levels appear much less frequently, such as `chapter` (634), `part` (132), and `subparagraph` (807). These are likely found in documents with less common or more complex heading structures, including theses, books, and articles with deeply nested sections.
+
+```{note}
+The x-axis uses a logarithmic scale because the number of sentences is nearly five orders of magnitude greater than that of the rarest element kinds. This makes the smaller categories easier to distinguish in the plot, while the table above provides the exact counts.
+```
+
+
 
 ```{code-cell} ipython3
 :tags: [remove-input]
 m2.plot_kind_mix(S2); plt.show()
 ```
-Grouping the 23,697 parsed papers by their maximum hierarchy depth shows how the element mix changes with structure. Sentences remain the majority in every group but decline steadily from 84% for papers of depth 2 or less to 77% for papers of depth 6 or more. Block formulas stay roughly constant at about 10%. The loss is taken up by structural nodes: list items, lists, paragraphs, subsections and sub-subsections occupy a visibly larger share in deeper papers. This is expected, since a deeper tree requires more headings and list levels, and it confirms that
-the parser assigns levels from the document's own structure.
+Grouping the 23,697 parsed papers by their maximum hierarchy depth shows how the element distribution changes across papers with different structures. `Sentences` make up the largest share in every group, but their proportion gradually drops from 84% in papers with a depth of 2 or less to 76% in papers with a depth of 6 or more. Block `formulas` remain fairly consistent, accounting for around 8–11% across the groups.
+
+In deeper papers, structural elements make up a larger share of the total. This is especially clear for `list items`, `paragraph`, `subsections`, and `lists`. This is expected, as papers with more hierarchy levels tend to have more headings and nested structures. Depth 4 is the largest group, with 7,003 papers. Meanwhile, 5,962 papers (25%) have a maximum depth of 6 or more.
 
 
 ```{code-cell} ipython3
 :tags: [remove-input]
 m2.plot_depth(S2); plt.show()
 ```
-
-Hierarchy depth adapts to each publication. Depth 0 holds exactly one document
-root per parsed version (32,652). Depths 2 and 3, typically sections with their
-subsections or sentences, hold 78% of all elements, and depths 0 to 4 hold 96%.
-Elements below depth 6 are rare (0.2%). At paper level the maximum depth peaks at
-4 (7.8k papers) and reaches 12 for a single paper with heavily nested lists.
-Both panels use a logarithmic axis, so exact counts are in the table.
+The hierarchical distribution shows that most elements are concentrated at depths 2–4, with depth 3 containing the largest number of elements (5.49 million). The number of elements decreases substantially at deeper levels, indicating that deeply nested structures are less common. Similarly, most papers have a maximum hierarchy depth between 3 and 6, with depth 4 being the most frequent (approximately 7,000 papers). Only a small number of papers reach depths above 9. Overall, the results suggest that most parsed papers have moderately deep hierarchical structures, while highly nested documents are relatively rare.
 
 ### 2.3 Deduplication Efficiency
 
@@ -567,11 +570,67 @@ display(T2["dedup"])
 m2.plot_dedup(S2); plt.show()
 ```
 
-Deduplication removes 2.81M of 12.76M elements (22.0%) and 353k of 1.34M BibTeX entries (26.4%).
+Deduplication reduced the total number of elements from 12.59 million to 9.83 million (21.9%), while BibTeX entries decreased from 1.34 million to 0.98 million (26.4%). The reduction becomes more significant as the number of parsed versions per paper increases. For papers with 2 versions, the reduction reaches 37.9% for elements and 45.7% for BibTeX entries, rising to 63.2% and 74.5%, respectively, for papers with 5 or more versions. This indicates that deduplication is particularly effective for papers with multiple versions, where repeated elements and references are more likely to occur.
 
-- **All the gain comes from multi-version papers.** The 16,782 single-version papers (71% of parsed papers) lose no elements, so the 2.81M savings come entirely from the 6,915 papers with several versions, whose element count falls by 43.7%.
-- **Reduction grows with the number of versions**, from 38.0% for two versions to 63.4% for five or more, because each new version largely repeats earlier text. Only exact matches after cleanup are merged, so these figures are conservative.
-- **References deduplicate even better** (45.7% to 74.4%) and come close to the theoretical ceiling of 1 − 1/v (50% for two versions): bibliographies change little between versions. The 0.5% for single-version papers comes from duplicate entries within one bibliography.
+### 2.4 Qualitative Examples of Parsed Trees and Unified BibTeX Records
+
+**Example of a Parsed Hierarchical Tree**
+
+```
+Document
+│
+├── Abstract
+│   ├── Sentence
+│   ├── Sentence
+│   └── Sentence
+│
+├── Section: Introduction
+│   ├── Paragraph
+│   │   ├── Sentence
+│   │   └── Sentence
+│   └── Subsection: Background
+│       ├── Sentence
+│       └── Formula
+│
+├── Section: Methodology
+│   ├── Subsection: Proposed Approach
+│   │   ├── Paragraph
+│   │   │   ├── Sentence
+│   │   │   └── Formula
+│   │   └── Figure
+│   └── Subsection: Implementation
+│       ├── Sentence
+│       └── List
+│           ├── Item
+│           └── Item
+│
+├── Section: Results
+│   ├── Figure
+│   ├── Formula
+│   └── Sentence
+│
+└── Section: Conclusion
+    ├── Sentence
+    └── Sentence
+```
+
+**Example of a Unified BibTeX Record**
+
+```
+# Version 1
+@article{reference_v1,
+  title = {Example Research Paper},
+  author = {Author A and Author B},
+  year = {2020}
+}
+
+# Version 2
+@article{reference_v2,
+  title = {Example Research Paper},
+  author = {Author A and Author B},
+  doi = {10.xxxx/example}
+}
+```
 
 ### 2.5 Parser Performance
 
@@ -580,35 +639,8 @@ Deduplication removes 2.81M of 12.76M elements (22.0%) and 353k of 1.34M BibTeX 
 display(T2["performance"])
 m2.plot_performance(S2); plt.show()
 ```
+The complete corpus of 25,000 papers was processed using 8 workers in 578.6 seconds (approximately 9.64 minutes), achieving a throughput of 43.21 papers per second.
 
----
+The wall-clock time averaged 0.023 seconds per paper, while the reported average processing time was 0.184 seconds per paper. The difference is due to parallel execution across multiple workers.
 
-## 3. Discussion
-
-### 3.1. Key Architectural Strengths and Design Trade-offs
-
-- **Separating tree construction from text cleanup:** `hierarchy.build_tree()` and `split_sentences()` run on uncleaned LaTeX first, while citation renaming, math normalization, and formatting cleanup run afterward on each tree node. Cleaning the text first would strip command braces and formatting wrappers that the sentence splitter relies on to avoid splitting inside footnotes, citations, or inline equations. Running cleanup immediately before storage hashing still ensures that cosmetic edits across revisions do not prevent deduplication.
-- **Two-pass coordination across versions:** Extracting and deduplicating bibliographies across all versions before normalizing the version trees resolves citation key changes early. When an author renames a key between $v_1$ and $v_2$, rewriting `\cite` commands in $v_1$ before hashing allows identical citing sentences in both versions to collapse into one element row.
-- **Content hashing with per-version occurrence ordinals:** Hashing `(kind, content)` alone would merge two genuinely separate subsections or repeated sentences inside the *same* version into a single node, creating cycles or merged branches within one version's tree. Including the per-version occurrence index `(kind, content, ordinal)` keeps repeated elements distinct within a single version while still deduplicating matching elements across versions.
-- **Hybrid `.bib` parsing vs. full grammar parsing:** Relying solely on `bibtexparser` made `.bib` parsing the main runtime bottleneck (~35 minutes for 150 files). Filtering `.bib` files to cited keys first and scanning them with a custom state-machine parser reduced that time to 6 seconds (~350$\times$ faster), while keeping `bibtexparser` as a fallback for malformed entries preserved fault tolerance.
-- **In-memory filtering and resumable execution:** Stripping figure binaries in memory during Milestone 1 (~95.6% storage reduction) and writing atomic per-paper outputs with schema-versioned `_SUCCESS` markers in Milestone 2 kept disk usage (~6.5 GB raw across five ranges) and memory within Google Colab limits while allowing interrupted runs to resume without repeating work.
-
-### 3.2. Challenges, Edge Cases, and Failure Analysis (Missing Sources, Rate Limits, Malformed LaTeX)
-
-- **Missing TeX sources and transient crawl errors:** About 4.9% of discovered versions had no TeX source (`pdf_only` at 4.54%, `no_source` HTTP 404 responses at 0.31%, and 3 `non_tex` files), and 49 versions (0.14%) ended in transient download errors (`IncompleteRead` on large archives or persistent HTTP 429 rate limits). Recording these as empty version records rather than dropping them preserved accurate version counts across both milestones.
-- **Catastrophic regex backtracking on `\bibitem` entries:** During corpus testing, paper 2606-00335 hung a worker process because an early regex for abbreviated physics venues had adjacent optional dot and whitespace quantifiers that backtracked exponentially on long uppercase acronyms. Rewriting the pattern to require an explicit separator after each token eliminated the hang.
-- **Leaked front-matter and floatless tables:** Many journal classes (*revtex4*, *elsarticle*) place `\title`, `\author`, `\affiliation`, and trailing ORCID brackets after `\begin{document}`, while astronomy and physics papers often use standalone table environments (*deluxetable\**, *tabularx*) without an outer `\begin{table}` float. Stripping 35 front-matter commands with balanced-brace scanning and recognizing 25 floated and standalone table environments prevented metadata from leaking as body sentences and kept tables intact.
-- **Multi-line math and spacing collisions:** Wrapping *align* and *gather* bodies in inner *aligned* and *gathered* blocks kept normalized `\begin{equation}` nodes valid in LaTeX, while matching `\\` before `\[` prevented row breaks with vertical spacing (`\\[2pt]`) from being misread as opening display math.
-- **Unresolved citation keys from missing `.bib` files:** Because Milestone 1 extracts only `.tex` and `.bib` files per the project specification, papers whose authors uploaded only a compiled `.bbl` file without the original `.bib` database yield no bibliography entries when `\bibliography{...}` is used. The parser tracks all affected citations per version in `unresolved_citation_keys` inside `stats.json`.
-
-### 3.3. Dataset Limitations and Readiness for Milestone 3 (Reference Matching)
-
-The standardized `bibtex`, `elements`, and `hierarchy` tables connect directly to Milestone 3's reference matching pipeline, while leaving a few corpus limitations that Milestone 3 must account for:
-
-- **Direct identifier matches for automatic labeling:** Whenever a bibliography entry includes an arXiv identifier (extracted from `eprint` fields or `\bibitem` text and normalized into `bibtex.url`), it can be matched deterministically to `ref_arxiv_id` in Milestone 1's `references` table. This provides a high-precision baseline for automatically labeling at least 10% of the corpus.
-- **Cleaned metadata for candidate ranking:** Converting LaTeX accents to Unicode, standardizing author names to *"Given Family"* order, and masking out URLs, arXiv IDs, and access dates during year extraction provide clean fields for Milestone 3 feature engineering—including title similarity, author surname overlap, and year differences (accounting for the typical 0–1 year gap between an arXiv preprint and its journal publication).
-- **Hierarchy-based citation context:** Because `\cite` commands in `elements` are renamed to the unified `citation_key` in `bibtex`, Milestone 3 can join `bibtex` with `elements` and `hierarchy` to extract contextual features such as the citing sentence's text, the section where the citation appears, and co-cited keys.
-- **Limitations to handle in Milestone 3:**
-  1. *Incomplete ground-truth pool:* Only about half of a paper's Semantic Scholar references (18.3 of 36.7 on average) carry an arXiv ID, and 39 recent papers were not yet indexed by Semantic Scholar. As a result, many `bibtex` entries correspond to non-arXiv works and will properly form all-negative rows in the candidate matrix.
-  2. *Titleless physics references and custom macros:* Physics `\bibitem` entries often omit article titles entirely (`title = None`), so matching models must combine author, year, and venue features rather than relying on title similarity alone. In addition, author-defined `\newcommand` macros in the preamble are not expanded into titles or prose.
-  3. *Missing `.bbl`-only bibliographies:* Papers whose authors supplied only a `.bbl` file (excluded during Milestone 1's `.tex`/`.bib` extraction) have no extracted `bibtex` rows and should be excluded when sampling publications for manual and automatic labeling in Milestone 3.
+Regarding memory consumption, the parser used an average of 454.0 MB of RAM, with a peak usage of 696.7 MB. The final output occupied 4.80 GB, equivalent to approximately 201.3 KB per paper.
