@@ -362,7 +362,7 @@ Per-paper latency. The median paper takes 3.5 s and the mean is 8.3 s (95th perc
 
 Entry discovery. Resolving IDs and version lists took 4,710 s (78 min) in total, summed over the ranges whose logs recorded it (1, 3 and 5). Ranges 2 and 4 did their discovery in runs that were not timed, or whose logs were lost, and appear as about 0 s in the table below, so this total is a lower bound.
 
-End-to-end wall time. Each range ran on its own Colab instance, so we report two numbers: 13.3 h if the five ran in parallel (set by the slowest range, Range 5) and 38.8 h if they had run one after another (the sum of all runs). Wall time includes restarts after Colab disconnections; it is also a lower bound for Range 2, whose earliest runs were not preserved.
+End-to-end wall time. Because each range of 5,000 papers ran on its own Colab instance, a single instance took an average of 7.77 h and a median of 7.46 h end-to-end. Wall time includes restarts after Colab disconnections; it is also a lower bound for Range 2, whose earliest runs were not preserved.
 
 ```{code-cell} ipython3
 :tags: [remove-input]
